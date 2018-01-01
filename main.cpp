@@ -12,8 +12,8 @@ int main() {
     //myRaster.print();
     //std::cout << "volume left: " << leftVolume << " empty fields: " << myRaster.getEmptyFields();
     myTable.setEmptyFields();
-    std::pair<int, int> point (2,1);
-    myTable.checkWaterLevel(point);
+    //std::pair<int, int> point (2,1);
+    myTable.checkWater();
     myTable.print();
 
 

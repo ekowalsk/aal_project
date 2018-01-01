@@ -24,10 +24,11 @@ private:
     std::list<std::pair<int, int>> activePoints;
 
     std::list<std::pair <int, int >> getNeighbours(int x, int y);
+    std::list<std::pair<int, int>> getCrossNeighbours(int x, int y);
     std::list<std::pair <int, int>> getAllNeighbours(int x, int y);
     void setNeighboursEmpty(int x, int y);
     std::list<std::pair<int, int>> findEmptyField();
-    std::list<std::pair<int, int>>  checkWaterAround(int x, int y);
+    std::list<std::pair<int, int>>  checkWaterAround(int x, int y, bool * setChecked);
 public:
 
     table(int m, int n, int maxHeight, std::list<Block*> * blockList);
