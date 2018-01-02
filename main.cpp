@@ -7,20 +7,28 @@
 
 int main() {
     std::list<Block *> * blocks = createFromFile("block.txt", L);
-    table myTable = table(M, N, L, blocks);
+    //table myTable = table(M, N, L, blocks);
     //int leftVolume = myRaster.countVolume();
     //myRaster.print();
     //std::cout << "volume left: " << leftVolume << " empty fields: " << myRaster.getEmptyFields();
-   myTable.setEmptyFields();
+   //myTable.setEmptyFields();
     //std::pair<int, int> point (3,6);
    // bool * setChecked;
     //myTable.checkWaterAround2(point);
-  myTable.checkWater2();
-    myTable.print();
+  //myTable.checkWater2();
+    //myTable.print();
     //myTable.printactivePoints();
     //Raster myRaster = Raster ("block.txt", M, N, L);
     //std::cout << "volume left: " << myRaster.countVolume() << std::endl;
     //myRaster.print();
+    table myTable = table(M,N,L);
+    //myTable.generateRaster(60);
+    myTable.checkWater2();
+    myTable.print();
+    std::cout << "pozostala objetosc wody: " << myTable.getLeftWaterVolume() << std::endl;
+
+
+
 
 
 }
