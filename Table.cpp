@@ -214,7 +214,7 @@ std::list<std::pair<int, int>> table::getWaterBlocks() {
                     raster[iter.first][iter.second].getHeight() < raster[x][y].getHeight() &&
                     raster[iter.first][iter.second].isChecked() != true) {
                     blocks.emplace_back(std::make_pair(x, y));
-                    blockslist[i].remove(it);
+                    //blockslist[i].remove(it);
                     return blocks;
                 }
             }
@@ -227,6 +227,7 @@ std::list<std::pair<int, int>> table::getWaterBlocks() {
 std::list<std::pair<int, int>> table::checkWaterAround(int x, int y, bool *setChecked) {
     std::list<std::pair<int, int>> neighbours = getNeighbours(x, y);
     *setChecked = false;
+    bool waterOnly = true;
     bool setToWater = true;
     for (auto &it : neighbours) {
         int itX = it.first;
@@ -247,7 +248,11 @@ std::list<std::pair<int, int>> table::checkWaterAround(int x, int y, bool *setCh
                         setToWater = false;
                         break;
                     }
-                    if (raster[cn.first][cn.second].getType() == Field::blockfield &&
+                    if (raster[cn.first][cn.second].getType() != Field::waterfield) {
+                        waterOnly = false;
+                    }
+                    if ((raster[cn.first][cn.second].getType() == Field::blockfield ||
+                         raster[cn.first][cn.second].getType() == Field::waterfield) &&
                         raster[cn.first][cn.second].getHeight() < raster[itX][itY].getHeight()) {
                         setToWater = false;
                         break;
@@ -257,7 +262,8 @@ std::list<std::pair<int, int>> table::checkWaterAround(int x, int y, bool *setCh
                 if (setToWater) {
                     raster[itX][itY].setType(Field::waterfield);
                     raster[itX][itY].setChecked(true);
-                    *setChecked = true;
+                    if (waterOnly)
+                        *setChecked = true;
                     if (raster[itX][itY].getHeight() < raster[x][y].getHeight()) {
                         raster[itX][itY].setHeight(raster[x][y].getHeight());
                     }
