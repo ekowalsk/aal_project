@@ -14,8 +14,10 @@ int main() {
    myTable.setEmptyFields();
     //std::pair<int, int> point (3,6);
    // bool * setChecked;
-    myTable.checkWater();
+    //myTable.checkWaterAround2(point);
+  myTable.checkWater2();
     myTable.print();
+    //myTable.printactivePoints();
     //Raster myRaster = Raster ("block.txt", M, N, L);
     //std::cout << "volume left: " << myRaster.countVolume() << std::endl;
     //myRaster.print();
