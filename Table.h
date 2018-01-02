@@ -28,7 +28,6 @@ private:
     std::list<std::pair <int, int>> getAllNeighbours(int x, int y);
     void setNeighboursEmpty(int x, int y);
     std::list<std::pair<int, int>> findEmptyField();
-    std::list<std::pair<int, int>>  checkWaterAround(int x, int y, bool * setChecked);
 public:
 
     table(int m, int n, int maxHeight, std::list<Block*> * blockList);
@@ -36,6 +35,7 @@ public:
     void printBlocks();
     void printactivePoints();
     void setEmptyFields();
+    std::list<std::pair<int, int>>  checkWaterAround(int x, int y, bool * setChecked);
     void checkWaterLevel(std::pair<int, int> block);
     void checkWater();
 

@@ -79,31 +79,36 @@ std::list<std::pair<int, int>> table::findEmptyField() {
     std::list<std::pair<int, int>> emptyFields;
     int x, y;
     for (x = 0, y = 0; x < M; x++) {
-        if (raster[x][y].getType() == cube::waterfield) {
+        if (raster[x][y].getType() == Field::waterfield) {
             emptyFields.emplace_back(std::make_pair(x, y));
+            break;
         }
     }
 // y = 1 aby uniknąć redundancji przy dodawaniu narożników
     for (y = 1, x = M - 1; y < N; y++) {
-        if (raster[x][y].getType() == cube::waterfield) {
+        if (raster[x][y].getType() == Field::waterfield) {
             emptyFields.emplace_back(std::make_pair(x, y));
+            break;
         }
     }
 
     for (x = 0, y = N - 1; x < M - 1; x++) {
-        if (raster[x][y].getType() == cube::waterfield) {
+        if (raster[x][y].getType() == Field::waterfield) {
             emptyFields.emplace_back(std::make_pair(x, y));
+            break;
         }
     }
 
     for (y = 1, x = 0; y < N - 1; y++) {
-        if (raster[x][y].getType() == cube::waterfield) {
+        if (raster[x][y].getType() == Field::waterfield) {
             emptyFields.emplace_back(std::make_pair(x, y));
+            break;
         }
     }
 
     for (auto &it : emptyFields) {
         raster[it.first][it.second].setType(cube::emptyfield);
+        raster[it.first][it.second].setChecked(true);
         this->emptyFields++;
     }
     return emptyFields;
@@ -219,7 +224,7 @@ std::list<std::pair<int, int>> table::getWaterBlocks() {
 
 };
 
-std::list<std::pair<int, int>> table::checkWaterAround(int x, int y, bool * setChecked) {
+std::list<std::pair<int, int>> table::checkWaterAround(int x, int y, bool *setChecked) {
     std::list<std::pair<int, int>> neighbours = getNeighbours(x, y);
     *setChecked = false;
     bool setToWater = true;
@@ -242,7 +247,8 @@ std::list<std::pair<int, int>> table::checkWaterAround(int x, int y, bool * setC
                         setToWater = false;
                         break;
                     }
-                    if (raster[cn.first][cn.second].getHeight() < raster[itX][itY].getHeight()) {
+                    if (raster[cn.first][cn.second].getType() == Field::blockfield &&
+                        raster[cn.first][cn.second].getHeight() < raster[itX][itY].getHeight()) {
                         setToWater = false;
                         break;
                     }
@@ -277,6 +283,7 @@ void table::checkWaterLevel(std::pair<int, int> block) {
     while (!activePoints.empty()) {
         if (setChecked)
             uncheck = true;
+
         activePoint = activePoints.front();
         int x = activePoint.first;
         int y = activePoint.second;
@@ -301,8 +308,7 @@ void table::checkWaterLevel(std::pair<int, int> block) {
 
 void table::checkWater() {
     std::list<std::pair<int, int>> block;
-    while(!(block = getWaterBlocks()).empty())
-    {
+    while (!(block = getWaterBlocks()).empty()) {
         checkWaterLevel(block.front());
     }
 }
