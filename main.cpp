@@ -1,12 +1,13 @@
 #include <iostream>
 #include "Raster.h"
 #include "Table.h"
-#define M 10 // wymiar tablicy
-#define N 10 // wymiar tablicy
-#define L 10 // wysokość najwyższego bloku
+#define M 5 // wymiar tablicy
+#define N 5 // wymiar tablicy
+#define L 5 // wysokość najwyższego bloku
 
 int main() {
-    std::list<Block *> * blocks = createFromFile("block.txt", L);
+    srand(time(NULL));
+    //std::list<Block *> * blocks = createFromFile("raster_table.txt", L);
     //table myTable = table(M, N, L, blocks);
     //int leftVolume = myRaster.countVolume();
     //myRaster.print();
@@ -18,16 +19,19 @@ int main() {
   //myTable.checkWater2();
     //myTable.print();
     //myTable.printactivePoints();
-    //Raster myRaster = Raster ("block.txt", M, N, L);
-    //std::cout << "volume left: " << myRaster.countVolume() << std::endl;
-    //myRaster.print();
+
     table myTable = table(M,N,L);
-    //myTable.generateRaster(60);
-    myTable.checkWater2();
+    myTable.generateRaster(20);
+    //myTable.writeToFile("raster.txt");
+    //myTable.writeToFile2("raster_table.txt");
+    //myTable.setEmptyFields();
+   // myTable.checkWater2();
     myTable.print();
     std::cout << "pozostala objetosc wody: " << myTable.getLeftWaterVolume() << std::endl;
 
-
+    Raster myRaster = Raster ("raster_table.txt", M, N, L);
+    std::cout << "volume left: " << myRaster.countVolume() << std::endl;
+    myRaster.print();
 
 
 

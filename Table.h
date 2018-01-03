@@ -18,33 +18,31 @@ private:
     int maxHeight;
     int emptyFields;
     int leftWaterVolume;
-    int underWaterBlocks;
     Field ** raster;
     std::list<Block *> * blockslist;
     std::list<std::pair<int, int>> activePoints;
 
     std::list<std::pair <int, int >> getNeighbours(int x, int y);
-    std::list<std::pair<int, int>> getCrossNeighbours(int x, int y);
-    std::list<std::pair <int, int>> getAllNeighbours(int x, int y);
     void setNeighboursEmpty(int x, int y);
     void setNeighboursChecked(int x, int y);
     std::list<std::pair<int, int>> findEmptyField();
 public:
 
+    table(int m, int n, int maxHeight);
     table(int m, int n, int maxHeight, std::list<Block*> * blockList);
     void print();
     void printBlocks();
     void printactivePoints();
     void setEmptyFields();
-    std::list<std::pair<int, int>>  checkWaterAround(int x, int y, bool * setChecked);
     void checkWaterAround2(std::pair<int, int>);
-    void checkWaterLevel(std::pair<int, int> block);
-    void checkWater();
     void checkWater2();
+    void generateRaster(float percent);
 
     std::list<std::pair<int, int>> getBlock();
-    std::list<std::pair<int, int>> getWaterBlocks();
-    void checkBlocks();
+    int getLeftWaterVolume();
+    int getEmptyFields();
+    void writeToFile(std::string fname);
+    void writeToFile2(std::string fname);
 
 };
 std::list<Block *> * createFromFile (std::string fname, int maxHeight);
