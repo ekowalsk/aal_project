@@ -21,11 +21,11 @@ int main() {
     //myTable.printactivePoints();
 
     table myTable = table(M,N,L);
-    myTable.generateRaster(20);
-    //myTable.writeToFile("raster.txt");
-    //myTable.writeToFile2("raster_table.txt");
-    //myTable.setEmptyFields();
-   // myTable.checkWater2();
+    myTable.generateRaster(67);
+    myTable.writeToFile("raster.txt");
+    myTable.writeToFile2("raster_table.txt");
+    myTable.setEmptyFields();
+    myTable.checkWater2();
     myTable.print();
     std::cout << "pozostala objetosc wody: " << myTable.getLeftWaterVolume() << std::endl;
 

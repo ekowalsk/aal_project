@@ -39,7 +39,7 @@ table::table(int m, int n, int maxHeight, std::list<Block *> *blockList) : M(m),
         for (auto &it : blockslist[i]) {
             x = it->getX();
             y = it->getY();
-            raster[x][y].setType(cube::blockfield);
+            raster[x][y].setType(Field::blockfield);
             raster[x][y].setHeight(it->getHeight());
         }
     }
@@ -49,11 +49,11 @@ void table::generateRaster(float percent) {
     int pos, x, y;
     int blocksAmount = int((percent * M * N) / 100);
     for (int i = 0; i < blocksAmount; i++) {
-        pos = rand() % M*N;
+        pos = rand() % (M * N);
         x = pos % M;
         y = pos / M;
         while (raster[x][y].getType() != Field::waterfield) {
-            pos = (pos+1) % M*N;
+            pos = (pos + 3) % (M * N);
             x = pos % M;
             y = pos / M;
         }
@@ -247,6 +247,8 @@ std::list<std::pair<int, int>> table::getBlock() {
                     if (raster[nX][nY].getType() == Field::emptyfield) {
                         hasCheckedField = true;
                     }
+                    if (nX == 0 || nX == M - 1 || nY == 0 || nY == M - 1)
+                        hasCheckedField = true;
                     if ((raster[nX][nY].getType() == Field::waterfield || raster[nX][nY].getType() == Field::blockfield)
                         && raster[nX][nY].isChecked()) {
                         hasCheckedField = true;
@@ -268,9 +270,56 @@ std::list<std::pair<int, int>> table::getBlock() {
     return blocks;
 };
 
+std::list<std::pair<int, int>> table::getBlock2() {
+    int x, y;
+    bool hasCheckedField = false, hasUncheckedField = false;
+    std::list<std::pair<int, int>> blocks;
+    std::list<std::pair<int, int>> neighbours;
+    for (int i = 1; i <= maxHeight; i++) {
+        for (auto &it : blockslist[i]) {
+            x = it->getX();
+            y = it->getY();
+            if (!raster[x][y].isChecked()) {
+                if (x == 0 || x == M-1 || y == 0 || y == N-1)
+                {
+                    blocks.emplace_back(std::make_pair(x,y));
+                    return blocks;
+                }
+                neighbours = getNeighbours(x, y);
+                for (auto &iter : neighbours) {
+                    int nX = iter.first;
+                    int nY = iter.second;
+                    if (raster[nX][nY].getType() == Field::emptyfield) {
+                        hasCheckedField = true;
+                    }
+                    if (nX == 0 || nX == M - 1 || nY == 0 || nY == M - 1)
+                        hasCheckedField = true;
+                    if ((raster[nX][nY].getType() == Field::waterfield || raster[nX][nY].getType() == Field::blockfield)
+                        && raster[nX][nY].isChecked()) {
+                        hasCheckedField = true;
+                    }
+                    if ((raster[nX][nY].getType() == Field::waterfield ||
+                         raster[nX][nY].getType() == Field::blockfield) && !raster[nX][nY].isChecked()) {
+                        hasUncheckedField = true;
+                    }
+                    if (hasCheckedField && hasUncheckedField) {
+                        blocks.emplace_back(std::make_pair(x, y));
+                        return blocks;
+                    }
+                }
+            }
+            hasCheckedField = false;
+            hasUncheckedField = false;
+        }
+    }
+    return blocks;
+};
+
+
 void table::setNeighboursChecked(int x, int y) {
     std::list<std::pair<int, int>> neighbours = getNeighbours(x, y);
     int height = raster[x][y].getHeight();
+    bool hasEmptyNeigh = false;
     for (auto &it : neighbours) {
         int nX = it.first;
         int nY = it.second;
@@ -282,12 +331,22 @@ void table::setNeighboursChecked(int x, int y) {
                 activePoints.emplace_back(std::pair<int, int>(nX, nY));
             }
             if (raster[nX][nY].getType() == Field::blockfield && raster[nX][nY].getHeight() < height) {
-                if (!(nX == 0 || nX == M-1 || nY == 0 || nY == N-1)) {
-                    raster[nX][nY].setChecked(true);
+                //raster[nX][nY].setChecked(true);
+
+                if (!(nX == 0 || nX == M - 1 || nY == 0 || nY == N - 1)) {
+                    /*std::list<std::pair<int, int>> neigh = getNeighbours(nX, nY);
+                    // może ustawiać na water bloki, za którymi nic nie ma
+                    for (auto &it : neigh) {
+                        if (raster[it.first][it.second].getType() == Field::emptyfield)
+                            hasEmptyNeigh = true;
+                    }
+                    if (!hasEmptyNeigh) {*/
                     leftWaterVolume += height - raster[nX][nY].getHeight();
+                    raster[nX][nY].setChecked(true);
                     raster[nX][nY].setHeight(height);
                     raster[nX][nY].setType(Field::waterfield);
                     activePoints.emplace_back(std::pair<int, int>(nX, nY));
+                    //}
                 }
             }
         }
@@ -306,11 +365,11 @@ void table::checkWaterAround2(std::pair<int, int> block) {
 }
 
 void table::checkWater2() {
-    std::list<std::pair<int, int>> block = getBlock();
+    std::list<std::pair<int, int>> block = getBlock2();
     while (!block.empty()) {
         checkWaterAround2(block.front());
         raster[block.front().first][block.front().second].setChecked(true);
-        block = getBlock();
+        block = getBlock2();
     }
 }
 

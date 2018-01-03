@@ -39,6 +39,8 @@ public:
     void generateRaster(float percent);
 
     std::list<std::pair<int, int>> getBlock();
+    std::list<std::pair<int, int>> getBlock2();
+
     int getLeftWaterVolume();
     int getEmptyFields();
     void writeToFile(std::string fname);
