@@ -21,7 +21,7 @@ int main() {
     //myTable.printactivePoints();
 
     table myTable = table(M,N,L);
-    myTable.generateRaster(67);
+    myTable.generateRaster(90);
     myTable.writeToFile("raster.txt");
     myTable.writeToFile2("raster_table.txt");
     myTable.setEmptyFields();
