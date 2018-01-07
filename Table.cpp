@@ -129,7 +129,13 @@ std::list<Block *> *createFromFile(std::string fname, int maxHeight) {
 void table::print() {
     for (int y = 0; y < N; y++) {
         for (int x = 0; x < M; x++) {
-            std::cout << "h: " << raster[x][y].getHeight() << " t: " << raster[x][y].getType()
+            std::string height = std::to_string(raster[x][y].getHeight());
+            if (height.length() == 1)
+                height += "  ";
+            if (height.length() == 2)
+                height += " ";
+
+            std::cout << "h: " << height << " t: " << raster[x][y].getType()
                       << " chec: " << raster[x][y].isChecked() << " | ";
         }
         std::cout << std::endl;
@@ -245,7 +251,7 @@ std::list<std::pair<int, int>> table::getBlock() {
                     int nX = iter.first;
                     int nY = iter.second;
                     if (raster[nX][nY].getType() == Field::emptyfield || x == 0 || x == M - 1 || y == 0 ||
-                        y == M - 1) {
+                        y == N - 1) {
                         hasCheckedField = true;
                     }
 
@@ -259,6 +265,7 @@ std::list<std::pair<int, int>> table::getBlock() {
                     if (raster[nX][nY].getType() == Field::blockfield && !raster[nX][nY].isChecked()) {
                         hasUncheckedField = true;
                     }
+
                     if (hasCheckedField && hasUncheckedField) {
                         blocks.emplace_back(std::make_pair(x, y));
                         return blocks;
@@ -326,11 +333,13 @@ void table::checkWaterAround2(std::pair<int, int> block) {
     }
 }
 
-void table::checkWater2() {
+void table::checkWater() {
     std::list<std::pair<int, int>> block = getBlock();
     while (!block.empty()) {
         checkWaterAround2(block.front());
-        raster[block.front().first][block.front().second].setChecked(true);
+        int x = block.front().first;
+        int y = block.front().second;
+        raster[x][y].setChecked(true);
         block = getBlock();
     }
 }

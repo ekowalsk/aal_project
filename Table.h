@@ -9,6 +9,7 @@
 #include <map>
 #include <list>
 #include "Cube.h"
+#include "Raster.h"
 
 class table
 {
@@ -35,11 +36,10 @@ public:
     void printactivePoints();
     void setEmptyFields();
     void checkWaterAround2(std::pair<int, int>);
-    void checkWater2();
+    void checkWater();
     void generateRaster(float percent);
 
     std::list<std::pair<int, int>> getBlock();
-    std::list<std::pair<int, int>> getBlock2();
 
     int getLeftWaterVolume();
     int getEmptyFields();
@@ -48,5 +48,6 @@ public:
 
 };
 std::list<Block *> * createFromFile (std::string fname, int maxHeight);
+//void generateRaster(float percent, Table table, Raster raster);
 
 #endif //AAL_TABLE_H

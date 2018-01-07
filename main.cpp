@@ -1,38 +1,29 @@
 #include <iostream>
 #include "Raster.h"
 #include "Table.h"
-#define M 5 // wymiar tablicy
-#define N 5 // wymiar tablicy
-#define L 5 // wysokość najwyższego bloku
+#include "Interface.h"
 
-int main() {
-    srand(time(NULL));
-    //std::list<Block *> * blocks = createFromFile("raster_table.txt", L);
-    //table myTable = table(M, N, L, blocks);
-    //int leftVolume = myRaster.countVolume();
-    //myRaster.print();
-    //std::cout << "volume left: " << leftVolume << " empty fields: " << myRaster.getEmptyFields();
-   //myTable.setEmptyFields();
-    //std::pair<int, int> point (3,6);
-   // bool * setChecked;
-    //myTable.checkWaterAround2(point);
-  //myTable.checkWater2();
-    //myTable.print();
-    //myTable.printactivePoints();
+#define M 100 // wymiar tablicy
+#define N 100 // wymiar tablicy
+#define L 60 // wysokość najwyższego bloku
 
-    table myTable = table(M,N,L);
-    myTable.generateRaster(90);
-    myTable.writeToFile("raster.txt");
-    myTable.writeToFile2("raster_table.txt");
-    myTable.setEmptyFields();
-    myTable.checkWater2();
-    myTable.print();
-    std::cout << "pozostala objetosc wody: " << myTable.getLeftWaterVolume() << std::endl;
+int main(int argc, char * argv[]) {
+    Interface inOut = Interface();
+    inOut.checkParameters(argc, argv);
+    if (inOut.mode == "-m2"){
+        srand(time(NULL));
+        table myTable = table(inOut.width, inOut.length, inOut.height);
+        myTable.generateRaster(inOut.density);
+        myTable.writeToFile2("raster_table.txt");
+        myTable.writeToFile("raster.txt");
+        myTable.setEmptyFields();
+        myTable.checkWater();
+        myTable.print();
 
-    Raster myRaster = Raster ("raster_table.txt", M, N, L);
-    std::cout << "volume left: " << myRaster.countVolume() << std::endl;
-    myRaster.print();
-
-
+        Raster myRaster = Raster("raster_table.txt", inOut.width, inOut.length, inOut.height);
+        myRaster.print();
+        std::cout << "raster volume left: " << myRaster.countVolume() << std::endl;
+        std::cout << "table volume left: " << myTable.getLeftWaterVolume() << std::endl;
+    }
 
 }
