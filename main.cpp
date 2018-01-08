@@ -1,36 +1,35 @@
 #include <iostream>
 #include "Raster.h"
 #include "Table.h"
-#include "Interface.h"
-
-#define M 100 // wymiar tablicy
-#define N 100 // wymiar tablicy
-#define L 60 // wysokość najwyższego bloku
+#include "Parameters.h"
+#include "Test.h"
 
 int main(int argc, char * argv[]) {
-    Interface inOut = Interface();
+    Parameters inOut = Parameters();
     inOut.checkParameters(argc, argv);
     if (inOut.mode == "-m1"){
         table myTable = table(inOut.width, inOut.length, inOut.height);
         Raster myRaster = Raster(inOut.width, inOut.length, inOut.height);
         readFromFile(myTable, myRaster);
-        myTable.setEmptyFields();
-        myTable.checkWater();
-        myTable.print();
-        myRaster.print();
         std::cout << "raster volume left: " << myRaster.countVolume() << std::endl;
-        std::cout << "table volume left: " << myTable.getLeftWaterVolume() << std::endl;
+        std::cout << "table volume left: " << myTable.countVolume() << std::endl;
+        myRaster.print();
+        myTable.print();
+
     }
     if (inOut.mode == "-m2"){
         srand(time(NULL));
         table myTable = table(inOut.width, inOut.length, inOut.height);
         Raster myRaster = Raster(inOut.width, inOut.length, inOut.height);
-        generateRaster(90, myTable, myRaster);
-        myTable.setEmptyFields();
-        myTable.checkWater();
+        generateRaster(inOut.density, myTable, myRaster);
+        std::cout << "raster volume left: " << myRaster.countVolume() << std::endl;
+        std::cout << "table volume left: " << myTable.countVolume() << std::endl;
         myTable.print();
         myRaster.print();
-        std::cout << "raster volume left: " << myRaster.countVolume() << std::endl;
-        std::cout << "table volume left: " << myTable.getLeftWaterVolume() << std::endl;
+    }
+
+    if (inOut.mode == "-m3"){
+        srand(time(NULL));
+        makeTests(inOut);
     }
 }

@@ -3,4 +3,4 @@ project(AAL)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(AAL main.cpp Cube.cpp Cube.h Table.cpp Table.h Raster.cpp Raster.h Interface.cpp)
+add_executable(AAL main.cpp Cube.cpp Cube.h Table.cpp Table.h Raster.cpp Raster.h Parameters.cpp Parameters.h Test.cpp Test.h)

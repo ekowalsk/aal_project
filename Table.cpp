@@ -321,7 +321,7 @@ void table::setNeighboursChecked(int x, int y) {
     }
 }
 
-void table::checkWaterAround2(std::pair<int, int> block) {
+void table::checkWaterAround(std::pair<int, int> block) {
     activePoints.push_back(block);
     std::pair<int, int> activePoint;
 
@@ -335,12 +335,18 @@ void table::checkWaterAround2(std::pair<int, int> block) {
 void table::checkWater() {
     std::list<std::pair<int, int>> block = getBlock();
     while (!block.empty()) {
-        checkWaterAround2(block.front());
+        checkWaterAround(block.front());
         int x = block.front().first;
         int y = block.front().second;
         raster[x][y].setChecked(true);
         block = getBlock();
     }
+}
+
+int table::countVolume() {
+    setEmptyFields();
+    checkWater();
+    return leftWaterVolume;
 }
 
 int table::getLeftWaterVolume() {

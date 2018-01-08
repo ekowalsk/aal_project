@@ -35,8 +35,9 @@ public:
     void printBlocks();
     void printactivePoints();
     void setEmptyFields();
-    void checkWaterAround2(std::pair<int, int>);
+    void checkWaterAround(std::pair<int, int>);
     void checkWater();
+    int countVolume();
     void generateRaster(float percent);
 
     std::list<std::pair<int, int>> getBlock();
@@ -53,6 +54,5 @@ public:
 
 };
 std::list<Block *> * createFromFile (std::string fname, int maxHeight);
-//void generateRaster(float percent, Table table, Raster raster);
 
 #endif //AAL_TABLE_H
