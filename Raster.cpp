@@ -5,6 +5,21 @@
 #include <fstream>
 #include <iostream>
 #include "Raster.h"
+Raster::Raster(int m, int n, int h) : M(m), N(n), H(h) {
+    emptyFields = 0;
+
+    raster = new cube **[M];
+    for (int i = 0; i < M; i++) {
+        raster[i] = new cube *[N];
+    }
+    for (int x = 0; x < M; x++)
+        for (int y = 0; y < N; y++)
+            raster[x][y] = new cube[H];
+
+    blocksPerLevel = new int[H];
+    for (int i = 0; i < H; i++)
+        blocksPerLevel[i] = 0;
+}
 
 Raster::Raster(std::string fname, int m, int n, int h) : M(m), N(n), H(h) {
     emptyFields = 0;
@@ -151,3 +166,12 @@ int Raster::countVolume() {
 int Raster::getEmptyFields() {
     return emptyFields;
 };
+
+cube *** Raster::getRaster(){
+    return raster;
+}
+int * Raster::getBlocksPerLevel(){
+    return blocksPerLevel;
+}
+
+

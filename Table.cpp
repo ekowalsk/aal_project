@@ -135,8 +135,7 @@ void table::print() {
             if (height.length() == 2)
                 height += " ";
 
-            std::cout << "h: " << height << " t: " << raster[x][y].getType()
-                      << " chec: " << raster[x][y].isChecked() << " | ";
+            std::cout << "h: " << height << " t: " << raster[x][y].getType() << " | ";
         }
         std::cout << std::endl;
     }
@@ -350,4 +349,20 @@ int table::getLeftWaterVolume() {
 
 int table::getEmptyFields() {
     return emptyFields;
+}
+
+int table::getWidth (){
+    return M;
+}
+int table::getLength(){
+    return N;
+}
+int table::getHeight(){
+    return maxHeight;
+}
+Field * table::getField(int x, int y){
+    return &raster[x][y];
+}
+std::list<Block *> * table::getBlocks(){
+    return blockslist;
 }

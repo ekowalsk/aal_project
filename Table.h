@@ -43,6 +43,11 @@ public:
 
     int getLeftWaterVolume();
     int getEmptyFields();
+    int getWidth();
+    int getLength();
+    int getHeight();
+    Field * getField(int x, int y);
+    std::list<Block *> * getBlocks();
     void writeToFile(std::string fname);
     void writeToFile2(std::string fname);
 

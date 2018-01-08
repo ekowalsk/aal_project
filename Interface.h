@@ -20,6 +20,7 @@ public:
 };
 
 void generateRaster(float percent, table myTable, Raster myRaster);
+void readFromFile (table myTable, Raster raster);
 
 
 

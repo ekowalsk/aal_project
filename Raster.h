@@ -28,12 +28,15 @@ private:
 public:
 
     Raster(std::string fname , int m, int n, int h);
+    Raster(int m, int n, int h);
 
     void createFromFile (std::string fname);
     void setEmptyFields(int z);
     void print();
     int countVolume();
     int getEmptyFields();
+    cube *** getRaster();
+    int * getBlocksPerLevel();
 };
 
 

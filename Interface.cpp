@@ -46,7 +46,7 @@ bool Interface::checkParameters(int argc, char *argv[]) {
         return true;
     } else {
         std::cerr << "Usage: " << std::endl;
-        std::cerr << "-m1 - read data from file data.txt and write solution to solution.txt" << std::endl;
+        std::cerr << "-m1 - read data from file data.txt and write solution to solution.txt, " << std::endl;
         std::cerr << argv[0] << " -m1 << data.txt >> solution.txt" << std::endl;
         std::cerr << "-m2 - generate data and write solution to file, m - width, n - length,"
                 " h - maximum height, d - density percent" << std::endl;
@@ -58,22 +58,51 @@ bool Interface::checkParameters(int argc, char *argv[]) {
     }
 }
 
-/*void generateRaster(float percent, table myTable, Raster myRaster){
+void generateRaster(float percent, table myTable, Raster myRaster){
     int pos, x, y;
-    int blocksAmount = int((percent * myTable.ge * N) / 100);
+    int M = myTable.getWidth();
+    int N = myTable.getLength();
+    int maxHeight = myTable.getHeight();
+    int blocksAmount = int((percent * M * N) / 100);
     for (int i = 0; i < blocksAmount; i++) {
         pos = rand() % (M * N);
         x = pos % M;
         y = pos / M;
-        while (raster[x][y].getType() != Field::waterfield) {
+        while (myTable.getField(x,y)->getType() != Field::waterfield) {
             pos = (pos + 3) % (M * N);
             x = pos % M;
             y = pos / M;
         }
         int height = rand() % maxHeight + 1;
-        raster[x][y].setType(cube::blockfield);
-        raster[x][y].setHeight(height);
+        myTable.getField(x,y)->setType(cube::blockfield);
+        myTable.getField(x,y)->setHeight(height);
         Block *newBlock = new Block(x, y, height);
-        blockslist[height].push_back(newBlock);
+        myTable.getBlocks()[height].push_back(newBlock);
+
+        for (int z = 0; z < height; z++) {
+            myRaster.getRaster()[x][y][z].setType(cube::blockfield);
+            myRaster.getBlocksPerLevel()[z]++;
+        }
     }
-}*/
+}
+
+void readFromFile (table myTable, Raster myRaster){
+    int x, y, height;
+    while (!std::cin.eof()) {
+        std::cin >> x;
+        // EOF mark just after the last character
+        if (std::cin.eof())
+            break;
+        std::cin >> y;
+        std::cin >> height;
+        auto *newBlock = new Block(x, y, height);
+        myTable.getBlocks()[height].push_back(newBlock);
+        myTable.getField(x,y)->setType(cube::blockfield);
+        myTable.getField(x,y)->setHeight(height);
+
+        for (int z = 0; z < height; z++) {
+            myRaster.getRaster()[x][y][z].setType(cube::blockfield);
+            myRaster.getBlocksPerLevel()[z]++;
+        }
+    }
+}
