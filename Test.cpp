@@ -59,17 +59,16 @@ void readFromFile(table myTable, Raster myRaster) {
 }
 
 int makeOneTest(Parameters parameters, double * tableDuration,
-                double * rasterDuration) {
+                double * rasterDuration, int width, int length, int height) {
     std::chrono::time_point<std::chrono::system_clock> start, stop;
     std::chrono::duration<double> duration;
     *tableDuration = 0;
     *rasterDuration = 0;
-    int nBlocks = 0;
+    int nBlocks = (width * length * parameters.density)/100;
     for (int i = 0; i < parameters.nInstances; i++) {
-        table myTable = table(parameters.width, parameters.length, parameters.height);
-        Raster myRaster = Raster(parameters.width, parameters.length, parameters.height);
+        table myTable = table(width, length, height);
+        Raster myRaster = Raster(width, length, height);
         generateRaster(parameters.density, myTable, myRaster);
-        nBlocks = myTable.getBlocks()->size();
         start = std::chrono::system_clock::now();
         int rasterVolume = myRaster.countVolume();
         stop = std::chrono::system_clock::now();
@@ -98,14 +97,18 @@ void makeTests(Parameters parameters) {
     int width = parameters.width;
     int length = parameters.length;
     int height = parameters.height;
+    int step = parameters.step;
     int nBlocks = 0;
 
     for (int nProblems = 0; nProblems != parameters.nProblems; nProblems++) {
-        nBlocks = makeOneTest(parameters, &tableDuration, &rasterDuration);
-        double rasterTime = width * length * height;
+        nBlocks = makeOneTest(parameters, &tableDuration, &rasterDuration, width, length, height);
+        double rasterTime = 4* width * length * height;
         rasterTimes.insert(std::make_pair(rasterTime, rasterDuration));
-        double tableTime = 4 * length * width + 1.5 * sqrt(nBlocks);
+        double tableTime = 4 * length * width + nBlocks*nBlocks;
         tableTimes.insert(std::make_pair(tableTime, tableDuration));
+        width += step;
+        length += step;
+        height += step;
     }
 
     std::cout << "table results: " << std::endl;
@@ -115,14 +118,14 @@ void makeTests(Parameters parameters) {
 }
 
 void printResults(std::multimap<double, double> durations) {
-    double median;
     auto iterator = durations.begin();
     for (int i = 0; i < durations.size() / 2; i++) {
         iterator++;
     }
-    median = iterator->second;
+    double mediant = iterator->second;
+    double medianT = iterator->first;
     for (auto &duration : durations) {
-        double actualTime = (duration.second)/median;
+        double actualTime = (duration.second * medianT)/(duration.first*mediant);
         std::cout << actualTime << std::endl;
     }
 }

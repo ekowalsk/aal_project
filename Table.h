@@ -29,6 +29,7 @@ private:
     std::list<std::pair<int, int>> findEmptyField();
 public:
 
+    ~table();
     table(int m, int n, int maxHeight);
     table(int m, int n, int maxHeight, std::list<Block*> * blockList);
     void print();

@@ -11,7 +11,7 @@
 
 void generateRaster(float percent, table myTable, Raster myRaster);
 void readFromFile (table myTable, Raster raster);
-int makeOneTest (Parameters parameters, double * tableDuration, double * rasterDuration);
+int makeOneTest (Parameters parameters, double * tableDuration, double * rasterDuration, int width, int length, int height);
 void makeTests (Parameters parameters);
 void printResults(std::multimap<double, double> durations);
 #endif //AAL_TEST_H

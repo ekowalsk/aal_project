@@ -44,6 +44,10 @@ table::table(int m, int n, int maxHeight, std::list<Block *> *blockList) : M(m),
         }
     }
 };
+table::~table(){
+    if (blockslist->size() != 0)
+        delete[]blockslist;
+}
 
 void table::generateRaster(float percent) {
     int pos, x, y;
