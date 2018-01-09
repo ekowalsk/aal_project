@@ -9,13 +9,13 @@
 #include <map>
 #include <list>
 #include "Cube.h"
-#include "Raster.h"
+#include "Cuboid.h"
 
-class table
+class Table
 {
 private:
-    int M;
-    int N;
+    int width;
+    int length;
     int maxHeight;
     int emptyFields;
     int leftWaterVolume;
@@ -29,22 +29,18 @@ private:
     std::list<std::pair<int, int>> findEmptyField();
 public:
 
-    ~table();
-    table(int m, int n, int maxHeight);
-    table(int m, int n, int maxHeight, std::list<Block*> * blockList);
+    ~Table();
+    Table(int m, int n, int maxHeight);
+    Table(int m, int n, int maxHeight, std::list<Block*> * blockList);
     void print();
-    void printBlocks();
-    void printactivePoints();
     void setEmptyFields();
     void checkWaterAround(std::pair<int, int>);
     void checkWater();
     int countVolume();
-    void generateRaster(float percent);
 
     std::list<std::pair<int, int>> getBlock();
 
-    int getLeftWaterVolume();
-    int getEmptyFields();
+
     int getWidth();
     int getLength();
     int getHeight();
@@ -52,8 +48,6 @@ public:
     std::list<Block *> * getBlocks();
     void writeToFile(std::string fname);
     void writeToFile2(std::string fname);
-
 };
-std::list<Block *> * createFromFile (std::string fname, int maxHeight);
 
 #endif //AAL_TABLE_H

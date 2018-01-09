@@ -13,16 +13,14 @@ private:
     int type;
 
 public:
-    enum fieldType
+    enum type
     {
-        emptyfield = 0,
-        waterfield = 1,
-        blockfield = 2
+        empty = 0,
+        water = 1,
+        block = 2
     };
 
     cube();
-    virtual ~cube();
-
     void setType(int type);
     int getType() const;
 };

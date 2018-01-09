@@ -9,7 +9,7 @@
 #include <map>
 #include "Test.h"
 
-void generateRaster(float percent, table myTable, Raster myRaster) {
+void generateRaster(float percent, Table myTable, Cuboid myRaster) {
     int pos, x, y;
     int M = myTable.getWidth();
     int N = myTable.getLength();
@@ -19,25 +19,25 @@ void generateRaster(float percent, table myTable, Raster myRaster) {
         pos = rand() % (M * N);
         x = pos % M;
         y = pos / M;
-        while (myTable.getField(x, y)->getType() != Field::waterfield) {
+        while (myTable.getField(x, y)->getType() != Field::water) {
             pos = (pos + 3) % (M * N);
             x = pos % M;
             y = pos / M;
         }
         int height = rand() % maxHeight + 1;
-        myTable.getField(x, y)->setType(cube::blockfield);
+        myTable.getField(x, y)->setType(Field::block);
         myTable.getField(x, y)->setHeight(height);
         Block *newBlock = new Block(x, y, height);
         myTable.getBlocks()[height].push_back(newBlock);
 
         for (int z = 0; z < height; z++) {
-            myRaster.getRaster()[x][y][z].setType(cube::blockfield);
+            myRaster.getRaster()[x][y][z].setType(cube::block);
             myRaster.getBlocksPerLevel()[z]++;
         }
     }
 }
 
-void readFromFile(table myTable, Raster myRaster) {
+void readFromFile(Table myTable, Cuboid myRaster) {
     int x, y, height;
     while (!std::cin.eof()) {
         std::cin >> x;
@@ -48,11 +48,11 @@ void readFromFile(table myTable, Raster myRaster) {
         std::cin >> height;
         auto *newBlock = new Block(x, y, height);
         myTable.getBlocks()[height].push_back(newBlock);
-        myTable.getField(x, y)->setType(cube::blockfield);
+        myTable.getField(x, y)->setType(cube::block);
         myTable.getField(x, y)->setHeight(height);
 
         for (int z = 0; z < height; z++) {
-            myRaster.getRaster()[x][y][z].setType(cube::blockfield);
+            myRaster.getRaster()[x][y][z].setType(cube::block);
             myRaster.getBlocksPerLevel()[z]++;
         }
     }
@@ -66,8 +66,8 @@ int makeOneTest(Parameters parameters, double * tableDuration,
     *rasterDuration = 0;
     int nBlocks = (width * length * parameters.density)/100;
     for (int i = 0; i < parameters.nInstances; i++) {
-        table myTable = table(width, length, height);
-        Raster myRaster = Raster(width, length, height);
+        Table myTable = Table(width, length, height);
+        Cuboid myRaster = Cuboid(width, length, height);
         generateRaster(parameters.density, myTable, myRaster);
         start = std::chrono::system_clock::now();
         int rasterVolume = myRaster.countVolume();
@@ -82,7 +82,7 @@ int makeOneTest(Parameters parameters, double * tableDuration,
         myTable.print();
         myRaster.print();
         std::cout << "raster volume left: " << rasterVolume << std::endl;
-        std::cout << "table volume left: " << tableVolume << std::endl;
+        std::cout << "Table volume left: " << tableVolume << std::endl;
     }
     *tableDuration = *tableDuration / parameters.nInstances;
     *rasterDuration = *rasterDuration / parameters.nInstances;
@@ -104,14 +104,14 @@ void makeTests(Parameters parameters) {
         nBlocks = makeOneTest(parameters, &tableDuration, &rasterDuration, width, length, height);
         double rasterTime = 4* width * length * height;
         rasterTimes.insert(std::make_pair(rasterTime, rasterDuration));
-        double tableTime = 4 * length * width + nBlocks*nBlocks;
+        double tableTime = 4 * length * width + 0.5*nBlocks*nBlocks;
         tableTimes.insert(std::make_pair(tableTime, tableDuration));
         width += step;
         length += step;
         height += step;
     }
 
-    std::cout << "table results: " << std::endl;
+    std::cout << "Table results: " << std::endl;
     printResults(tableTimes);
     std::cout << "raster results: " << std::endl;
     printResults(rasterTimes);

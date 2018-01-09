@@ -5,11 +5,7 @@
 #include "Cube.h"
 
 cube::cube() {
-    type = waterfield;
-}
-
-cube::~cube() {
-
+    type = water;
 }
 
 int cube::getType() const {
@@ -39,7 +35,7 @@ void Field::setChecked(bool checked) {
 Field::Field() {
     checked = false;
     height = 0;
-    setType(waterfield);
+    setType(water);
 }
 
 Block::Block(int x, int y, int height) {

@@ -1,5 +1,5 @@
 //
-// Created by eva on 29.12.17.
+// Created by Ewa Kowalska on 29.12.17.
 //
 
 #ifndef AAL_RASTER_H
@@ -10,12 +10,12 @@
 #include <string>
 #include "Cube.h"
 
-class Raster
+class Cuboid
 {
 private:
-    int M;
-    int N;
-    int H;
+    int width;
+    int length;
+    int maxHeight;
     int emptyFields;
     cube *** raster;
     std::list<std::pair<int, int>> activePoints;
@@ -27,8 +27,8 @@ private:
 
 public:
 
-    Raster(std::string fname , int m, int n, int h);
-    Raster(int m, int n, int h);
+    Cuboid(std::string fname , int m, int n, int h);
+    Cuboid(int m, int n, int h);
 
     void createFromFile (std::string fname);
     void setEmptyFields(int z);
