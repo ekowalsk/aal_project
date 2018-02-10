@@ -5,8 +5,15 @@
 #include <iostream>
 #include <fstream>
 #include "Table.h"
-
-Table::Table(int m, int n, int maxHeight) : width(m), length(n) {
+/**
+ * creates empty raster with array of lists, indexes of the array corresponds to heights of blocks
+ * @param width width of table
+ * @param length length of table
+ * @param maxHeight height of the highest block
+ */
+Table::Table(int width, int length, int maxHeight) {
+    this->width = width;
+    this->length = length;
     this->maxHeight = maxHeight;
     emptyFields = 0;
     leftWaterVolume = 0;
@@ -18,8 +25,17 @@ Table::Table(int m, int n, int maxHeight) : width(m), length(n) {
 
     blockslist = new std::list<Block *>[maxHeight + 1];
 }
+/**
+ * creates table and sets correspondent fields with parameters of blocks from the list
+ * @param width width of table
+ * @param length length of table
+ * @param maxHeight height of the highest block
+ * @param blockList list of blocks
+ */
 
-Table::Table(int m, int n, int maxHeight, std::list<Block *> *blockList) : width(m), length(n) {
+Table::Table(int width, int length, int maxHeight, std::list<Block *> *blockList){
+    this->width = width;
+    this->length = length;
     this->maxHeight = maxHeight;
     emptyFields = 0;
     leftWaterVolume = 0;
@@ -44,11 +60,11 @@ Table::Table(int m, int n, int maxHeight, std::list<Block *> *blockList) : width
         }
     }
 };
-Table::~Table(){
-    if (blockslist->size() != 0)
-        delete[]blockslist;
-}
 
+/**
+ * writes to a file coordinates and heights of blocks in a format that can be used to create Cuboid
+ * @param fname name od file
+ */
 void Table::writeToFile2(std::string fname) {
     std::fstream file;
     file.open(fname, std::ios::out | std::ios::trunc);
@@ -66,26 +82,9 @@ void Table::writeToFile2(std::string fname) {
     }
 }
 
-void Table::writeToFile(std::string fname) {
-    std::fstream file;
-    file.open(fname, std::ios::out | std::ios::trunc);
-    if (file.good()) {
-        for (int y = 0; y < length; y++) {
-            for (int x = 0; x < width; x++) {
-                int height = raster[x][y].getHeight();
-                if (height != 0)
-                    file << height << "|";
-                else
-                    file << " " << "|";
-            }
-            file << std::endl;
-        }
-        file.close();
-    } else {
-        std::cout << "can't open file" << std::endl;
-    }
-}
-
+/**
+ * prints table, h represents height of field, t represents type: 0 - empty, 1 - water, 2 - block
+ */
 void Table::print() {
     for (int y = 0; y < length; y++) {
         for (int x = 0; x < width; x++) {
@@ -100,7 +99,10 @@ void Table::print() {
         std::cout << std::endl;
     }
 }
-
+/**
+ * seeks for fields that are on the edge of raster and are not blocks, to specify from which fields the water will escape
+ * @return list of coordinates of fields
+ */
 std::list<std::pair<int, int>> Table::findEmptyField() {
     std::list<std::pair<int, int>> emptyFields;
     int x, y;
@@ -136,7 +138,11 @@ std::list<std::pair<int, int>> Table::findEmptyField() {
     return emptyFields;
 };
 
-// used while setting fields with no water
+/**
+ * checks neighbours of given field to set them empty if they're not blocks
+ * @param x x coordinate of field
+ * @param y y coordinate od field
+ */
 void Table::setNeighboursEmpty(int x, int y) {
     std::list<std::pair<int, int>> neighbours = getNeighbours(x, y);
     for (auto &it : neighbours) {
@@ -151,6 +157,9 @@ void Table::setNeighboursEmpty(int x, int y) {
     }
 }
 
+/**
+ * uses setNeighboursEmpty for all points on activePoints list
+ */
 void Table::setEmptyFields() {
     activePoints = findEmptyField();
     std::pair<int, int> activePoint;
@@ -161,6 +170,12 @@ void Table::setEmptyFields() {
     }
 }
 
+/**
+ * finds all of the neighbours of given point
+ * @param x x coordinate
+ * @param y y coordinate
+ * @return list of coordinates of neighbours
+ */
 std::list<std::pair<int, int>> Table::getNeighbours(int x, int y) {
     std::list<std::pair<int, int>> neighbours;
     int lx = x - 1;
@@ -179,6 +194,10 @@ std::list<std::pair<int, int>> Table::getNeighbours(int x, int y) {
     return neighbours;
 }
 
+/**
+ * finds the smallest block that has at the same time checked field and unchecked field as neighbours
+ * @return list constructed from returned block
+ */
 std::list<std::pair<int, int>> Table::getBlock() {
     int x, y;
     bool hasCheckedField = false, hasUncheckedField = false;
@@ -188,9 +207,9 @@ std::list<std::pair<int, int>> Table::getBlock() {
         for (auto &it : blockslist[i]) {
             x = it->getX();
             y = it->getY();
-            if ( x == 0 || x == width - 1 || y == 0 || y == length - 1)
-                hasCheckedField = true;
             if (!raster[x][y].isChecked()) {
+                if ( x == 0 || x == width - 1 || y == 0 || y == length - 1)
+                    hasCheckedField = true;
                 neighbours = getNeighbours(x, y);
                 for (auto &iter : neighbours) {
                     int nX = iter.first;
@@ -215,6 +234,11 @@ std::list<std::pair<int, int>> Table::getBlock() {
     return blocks;
 };
 
+/**
+ * defines the rules of checking neighbours, depending of the height and type of field
+ * @param x
+ * @param y
+ */
 void Table::setNeighboursChecked(int x, int y) {
     std::list<std::pair<int, int>> neighbours = getNeighbours(x, y);
     int height = raster[x][y].getHeight();
@@ -230,12 +254,10 @@ void Table::setNeighboursChecked(int x, int y) {
                 activePoints.emplace_back(std::pair<int, int>(nX, nY));
             }
             if (raster[nX][nY].getType() == Field::block && raster[nX][nY].getHeight() == height) {
-                activePoints.push_back(std::make_pair(nX, nY));
+                activePoints.emplace_back(std::make_pair(nX, nY));
                 raster[nX][nY].setChecked(true);
             }
             if (raster[nX][nY].getType() == Field::block && raster[nX][nY].getHeight() < height) {
-                //raster[nX][nY].setChecked(true);
-
                 if (!(nX == 0 || nX == width - 1 || nY == 0 || nY == length - 1)) {
                     std::list<std::pair<int, int>> neigh = getNeighbours(nX, nY);
                     // może ustawiać na water bloki, za którymi nic nie ma
@@ -256,6 +278,10 @@ void Table::setNeighboursChecked(int x, int y) {
     }
 }
 
+/**
+ * simulates filling with water surface at the level of given block
+ * @param block blocks which height states the level of water
+ */
 void Table::checkWaterAround(std::pair<int, int> block) {
     activePoints.push_back(block);
     std::pair<int, int> activePoint;
@@ -266,7 +292,9 @@ void Table::checkWaterAround(std::pair<int, int> block) {
         activePoints.pop_front();
     }
 }
-
+/**
+ * simulates filling with water for all the blocks returned from getBlock() function
+ */
 void Table::checkWater() {
     std::list<std::pair<int, int>> block = getBlock();
     while (!block.empty()) {
@@ -278,6 +306,10 @@ void Table::checkWater() {
     }
 }
 
+/**
+ * gathers all of procedures necessary to count amount of water left on the raster
+ * @return left volume of water
+ */
 int Table::countVolume() {
     setEmptyFields();
     checkWater();

@@ -14,7 +14,12 @@ Parameters::Parameters() {
     nInstances = 0;
     step = 0;
 }
-
+/**
+ * handles validating call parameters
+ * @param argc
+ * @param argv
+ * @return
+ */
 bool Parameters::checkParameters(int argc, char *argv[]) {
     if (argc == 5) {
         std::string strMode("-m1");
@@ -61,7 +66,7 @@ bool Parameters::checkParameters(int argc, char *argv[]) {
         std::cerr << "example: " << argv[0] << " -m1 100 120 60 << data.txt >> solution.txt" << std::endl;
         std::cerr << "-m2 - generate data and write solution to file, parameters: width, length,"
                 " maximum height, density percent" << std::endl;
-        std::cerr << "example " << argv[0] << " -m2 100 120 60 80 >> solution.txt " << std::endl;
+        std::cerr << "example: " << argv[0] << " -m2 100 120 60 80 >> solution.txt " << std::endl;
         std::cerr << "-m3 - test, parameters: width, length, maximum height, density percent, number of"
                 "problems, step, number of instances  " << std::endl;
         std::cerr << "example: " << argv[0] << "-m3 100 120 60 80 5 5 5" << std::endl;
@@ -69,4 +74,3 @@ bool Parameters::checkParameters(int argc, char *argv[]) {
         return false;
     }
 }
-

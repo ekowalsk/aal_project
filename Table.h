@@ -10,7 +10,9 @@
 #include <list>
 #include "Cube.h"
 #include "Cuboid.h"
-
+/**
+ * represents raster and blocks in 2D array
+ */
 class Table
 {
 private:
@@ -24,29 +26,25 @@ private:
     std::list<std::pair<int, int>> activePoints;
 
     std::list<std::pair <int, int >> getNeighbours(int x, int y);
+    std::list<std::pair<int, int>> getBlock();
     void setNeighboursEmpty(int x, int y);
     void setNeighboursChecked(int x, int y);
     std::list<std::pair<int, int>> findEmptyField();
-public:
-
-    ~Table();
-    Table(int m, int n, int maxHeight);
-    Table(int m, int n, int maxHeight, std::list<Block*> * blockList);
-    void print();
     void setEmptyFields();
     void checkWaterAround(std::pair<int, int>);
     void checkWater();
+public:
+
+    Table(int w, int len, int maxHeight);
+    Table(int width, int length, int maxHeight, std::list<Block*> * blockList);
     int countVolume();
-
-    std::list<std::pair<int, int>> getBlock();
-
+    void print();
 
     int getWidth();
     int getLength();
     int getHeight();
     Field * getField(int x, int y);
     std::list<Block *> * getBlocks();
-    void writeToFile(std::string fname);
     void writeToFile2(std::string fname);
 };
 

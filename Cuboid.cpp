@@ -5,12 +5,22 @@
 #include <fstream>
 #include <iostream>
 #include "Cuboid.h"
-Cuboid::Cuboid(int m, int n, int h) : width(m), length(n), maxHeight(h) {
+/**
+ * creates empty cuboid
+ * @param width width of cuboid
+ * @param length length of cuboid
+ * @param height height of cuboid
+ */
+Cuboid::Cuboid(int width, int length, int height){
+    this->width = width;
+    this->length = length;
+    this->maxHeight = height;
     emptyFields = 0;
 
     raster = new cube **[width];
     for (int i = 0; i < width; i++) {
         raster[i] = new cube *[length];
+
     }
     for (int x = 0; x < width; x++)
         for (int y = 0; y < length; y++)
@@ -20,8 +30,17 @@ Cuboid::Cuboid(int m, int n, int h) : width(m), length(n), maxHeight(h) {
     for (int i = 0; i < maxHeight; i++)
         blocksPerLevel[i] = 0;
 }
-
-Cuboid::Cuboid(std::string fname, int m, int n, int h) : width(m), length(n), maxHeight(h) {
+/**
+ * creates cuboid and initializes it with data from file
+ * @param fname name of file
+ * @param width width of cuboid
+ * @param length length of cuboid
+ * @param height height of cuboid
+ */
+Cuboid::Cuboid(std::string fname, int width, int length, int height){
+    this->width = width;
+    this->length = length;
+    this->maxHeight = height;
     emptyFields = 0;
 
     raster = new cube **[width];
@@ -38,7 +57,10 @@ Cuboid::Cuboid(std::string fname, int m, int n, int h) : width(m), length(n), ma
 
     createFromFile(fname);
 };
-
+/**
+ * initializes structures with data from file
+ * @param fname name of file
+ */
 void Cuboid::createFromFile(std::string fname) {
     std::fstream file;
     file.open(fname, std::ios::in);
@@ -62,6 +84,12 @@ void Cuboid::createFromFile(std::string fname) {
     }
 };
 
+/**
+ * seeks for fields on each level of cuboid that are on the edge of raster and are not blocks, to specify from which fields the water will escape
+ * @return list of coordinates of fields
+ * @param z level of cuboid
+ *
+ */
 std::list<std::pair<int, int>> Cuboid::findEmptyField(int z) {
     std::list<std::pair<int, int>> emptyFields;
     int x, y;
@@ -97,7 +125,12 @@ std::list<std::pair<int, int>> Cuboid::findEmptyField(int z) {
     return emptyFields;
 };
 
-// used while setting fields with no water
+/**
+ * checks neighbours of given field to set them empty if they're not blocks
+ * @param x coordinate of field
+ * @param y coordinate of field
+ * @param z coordinate of field (level)
+ */
 void Cuboid::setNeighboursEmpty(int x, int y, int z) {
     std::list<std::pair<int, int>> neighbours = getNeighbours(x, y);
     for (auto &it : neighbours) {
@@ -110,7 +143,10 @@ void Cuboid::setNeighboursEmpty(int x, int y, int z) {
         }
     }
 };
-
+/**
+ * uses setNeighboursEmpty for all points on activePoints list
+ * @param z level
+ */
 void Cuboid::setEmptyFields(int z) {
     activePoints = findEmptyField(z);
     std::pair<int, int> activePoint;
@@ -121,6 +157,12 @@ void Cuboid::setEmptyFields(int z) {
     }
 };
 
+/**
+ * finds all of the neighbours of given point
+ * @param x x coordinate
+ * @param y y coordinate
+ * @return list of coordinates of neighbours
+ */
 std::list<std::pair<int, int>> Cuboid::getNeighbours(int x, int y) {
     std::list<std::pair<int, int>> neighbours;
     int lx = x - 1;
@@ -139,6 +181,9 @@ std::list<std::pair<int, int>> Cuboid::getNeighbours(int x, int y) {
     return neighbours;
 };
 
+/**
+ * prints cuboid, types: 0 - empty, 1 - water, 2 - block
+ */
 void Cuboid::print() {
     for (int z = maxHeight - 1; z >= 0; z--) {
         for (int y = 0; y < length; y++) {
@@ -150,7 +195,10 @@ void Cuboid::print() {
         std::cout << std::endl;
     }
 };
-
+/**
+ * gathers all functions necessary to count volume left
+ * @return volume
+ */
 int Cuboid::countVolume() {
     for (int z = 0; z < maxHeight; z++) {
         setEmptyFields(z);
@@ -159,7 +207,6 @@ int Cuboid::countVolume() {
     for (int i = 0; i < maxHeight; i++) {
         blocksVolume += blocksPerLevel[i];
     }
-    std::cout << "blockVolume: " << blocksVolume << std::endl;
     return width * length * maxHeight - emptyFields - blocksVolume;
 };
 

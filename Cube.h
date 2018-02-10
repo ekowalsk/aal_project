@@ -5,8 +5,6 @@
 #ifndef AAL_BLOCK_H
 #define AAL_BLOCK_H
 
-#define MAX_HEIGHT 10;
-
 class cube {
 
 private:
@@ -56,15 +54,8 @@ public:
 
     int getHeight() const;
 
-    void setHeight(int height);
-
     int getX() const;
 
-    void setX(int x);
-
     int getY() const;
-
-    void setY(int y);
-
 };
 #endif //AAL_BLOCK_H

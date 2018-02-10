@@ -9,10 +9,13 @@
 #include <list>
 #include <string>
 #include "Cube.h"
-
+/**
+ * represents raster and blocks in 3D array
+ */
 class Cuboid
 {
 private:
+
     int width;
     int length;
     int maxHeight;
@@ -27,8 +30,8 @@ private:
 
 public:
 
-    Cuboid(std::string fname , int m, int n, int h);
-    Cuboid(int m, int n, int h);
+    Cuboid(std::string fname , int width, int length, int height);
+    Cuboid(int width, int length, int height);
 
     void createFromFile (std::string fname);
     void setEmptyFields(int z);
